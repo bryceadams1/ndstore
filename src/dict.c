@@ -27,6 +27,8 @@
 #include "redisassert.h"
 #include "monotonic.h"
 
+#include "boost/multi_array.hpp"
+
 /* Using dictSetResizeEnabled() we make possible to disable
  * resizing and rehashing of the hash table as needed. This is very important
  * for Redis, as we use copy-on-write and don't want to move too much memory
@@ -49,6 +51,7 @@ struct dictEntry {
         uint64_t u64;
         int64_t s64;
         double d;
+        ndarray data;
     } v;
     struct dictEntry *next;     /* Next entry in the same hash bucket. */
 };
@@ -58,6 +61,9 @@ typedef struct {
     dictEntry *next;
 } dictEntryNoValue;
 
+struct ndarray {
+    boost::multi_array<int> data;
+}
 /* -------------------------- private prototypes ---------------------------- */
 
 static void _dictExpandIfNeeded(dict *d);
